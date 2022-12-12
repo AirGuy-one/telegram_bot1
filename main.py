@@ -1,12 +1,17 @@
 import requests
 import telegram
 
-DEVMAN_TOKEN='Token d93df5c85681512862e57e04228d6fcf080df87e'
-BOT_TOKEN='5908796517:AAGXALrwq_Y2uYH8_4yp1wnhdIZohKC_TME'
+load_dotenv()
+
+
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
+DEVMAN_TOKEN = os.environ.get('DEVMAN_TOKEN')
 
 bot = telegram.Bot(token=BOT_TOKEN)
 
 payload = {'Authorization': DEVMAN_TOKEN}
+
+user_chat_id = int(input('Укажите свой chat_id: '))
 
 # while True:
 #     try:
