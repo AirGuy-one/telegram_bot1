@@ -26,8 +26,7 @@ def main():
             if response.status_code:
                 response_data = json.loads(response.text)
                 if response_data['status'] == 'found':
-                    print(response_data)
-                    title_of_project = response_data['new_attempts'][0]['lesson_title']
+                    project_title = response_data['new_attempts'][0]['lesson_title']
                     work_status = response_data['new_attempts'][0]['is_negative']
 
                     if work_status:
@@ -36,7 +35,7 @@ def main():
                         work_response = 'Преподователю все понравилось, можно приступать к следующему уроку!'
 
                     bot.send_message(chat_id=user_chat_id,
-                                     text=f"У вас проверили работу \"{title_of_project}\"\n\n"
+                                     text=f"У вас проверили работу \"{project_title}\"\n\n"
                                           f"{work_response}",
                                      parse_mode=telegram.ParseMode.HTML)
         except (requests.exceptions.ReadTimeout, ConnectionError) as e:
