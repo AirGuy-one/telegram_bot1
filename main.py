@@ -33,7 +33,7 @@ def main():
                     if work_status:
                         work_response = 'К сожалению, в работе нашлись ошибки.'
                     else:
-                        work_response = "Преподователю все понравилось, можно приступать к следующему уроку!"
+                        work_response = 'Преподователю все понравилось, можно приступать к следующему уроку!'
 
                     bot.send_message(chat_id=user_chat_id,
                                      text=f"У вас проверили работу \"{title_of_project}\"\n\n"
