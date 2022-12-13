@@ -30,11 +30,10 @@ def main():
             fail_connection_count = 0
         else:
             try:
-                response = requests.get('https://dvmn.org/api/long_polling/',
+                response = requests.get('https://dvmn.org/api/long_polling/?timestamp=100000000000',
                                         headers=payload,
                                         timeout=10)
                 if response.status_code:
-                    print('http_status_code is 200')
                     response_data = json.loads(response.text)
                     if response_data['status'] == 'found':
 
