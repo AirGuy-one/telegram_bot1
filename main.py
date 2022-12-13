@@ -24,11 +24,11 @@ def main():
         try:
             response = requests.get('https://dvmn.org/api/long_polling/', headers=payload, timeout=30)
             if response.status_code:
-                response_dict = json.loads(response.text)
-                if response_dict['status'] == 'found':
-                    print(response_dict)
-                    title_of_project = response_dict['new_attempts'][0]['lesson_title']
-                    work_status = response_dict['new_attempts'][0]['is_negative']
+                response_data = json.loads(response.text)
+                if response_data['status'] == 'found':
+                    print(response_data)
+                    title_of_project = response_data['new_attempts'][0]['lesson_title']
+                    work_status = response_data['new_attempts'][0]['is_negative']
 
                     if work_status:
                         work_response = 'К сожалению, в работе нашлись ошибки.'
