@@ -35,11 +35,11 @@ def main():
                         work_response = 'Преподователю все понравилось, можно приступать к следующему уроку!'
 
                     bot.send_message(chat_id=user_chat_id,
-                                     text=f"У вас проверили работу \"{project_title}\"\n\n"
-                                          f"{work_response}",
+                                     text=f"""У вас проверили работу \"{project_title}\"
+{work_response}""",
                                      parse_mode=telegram.ParseMode.HTML)
         except (requests.exceptions.ReadTimeout, ConnectionError) as e:
-            print('The interval of 30 seconds has passed...')
+            pass
 
 
 if __name__ == '__main__':
