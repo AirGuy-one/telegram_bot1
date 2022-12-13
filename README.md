@@ -5,6 +5,7 @@
 ```
 BOT_TOKEN='trj4t4j89r489tj4t4y'
 DEVMAN_TOKEN='uyguiog3564654654oihio'
+CHAT_ID=123456789
 ```
 2. Устновить зависимости
 ```shell
