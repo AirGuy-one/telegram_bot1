@@ -15,4 +15,3 @@ pip install -r requirements.txt
 ```shell
 python3 main.py
 ```
-4. Ввести chat_id своего телеграмма.(Чтобы получить свой chat_id, напишите в Telegram специальному боту: @userinfobot)
