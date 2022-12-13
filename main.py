@@ -1,9 +1,8 @@
 import os
-import time
-
 import requests
 import json
 import telegram
+import time
 
 from dotenv import load_dotenv
 
@@ -18,23 +17,27 @@ bot = telegram.Bot(token=BOT_TOKEN)
 
 payload = {'Authorization': DEVMAN_TOKEN}
 
-user_chat_id = int(input('Укажите свой chat_id: '))
+user_chat_id = os.environ.get('CHAT_ID')
 
 
 def main():
     fail_connection_count = 0
 
     while True:
-        """ If the connection with the server is not established after 5 attempts, we will take a break for 10 min """
-        if fail_connection_count == 5:
+        """ If server dont after 20 attempts, we will take a break for 10 minutes """
+        if fail_connection_count == 20:
             time.sleep(600)
             fail_connection_count = 0
         else:
             try:
-                response = requests.get('https://dvmn.org/api/long_polling/', headers=payload, timeout=30)
+                response = requests.get('https://dvmn.org/api/long_polling/',
+                                        headers=payload,
+                                        timeout=10)
                 if response.status_code:
+                    print('http_status_code is 200')
                     response_data = json.loads(response.text)
                     if response_data['status'] == 'found':
+
                         project_title = response_data['new_attempts'][0]['lesson_title']
                         work_status = response_data['new_attempts'][0]['is_negative']
 
@@ -50,7 +53,7 @@ def main():
                 else:
                     fail_connection_count += 1
             except (requests.exceptions.ReadTimeout, ConnectionError) as e:
-                pass
+                fail_connection_count += 1
 
 
 if __name__ == '__main__':
