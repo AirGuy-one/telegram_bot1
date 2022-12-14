@@ -24,7 +24,7 @@ def main():
     fail_connection_count = 0
 
     while True:
-        """ If server dont after 20 attempts, we will take a break for 10 minutes """
+        """ If server dont answer after 20 attempts, we will take a break for 10 minutes """
         if fail_connection_count == 20:
             time.sleep(600)
             fail_connection_count = 0
