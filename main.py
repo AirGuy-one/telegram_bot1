@@ -7,20 +7,18 @@ import time
 from dotenv import load_dotenv
 
 
-load_dotenv()
-
-
-BOT_TOKEN = os.environ.get('BOT_TOKEN')
-DEVMAN_TOKEN = os.environ.get('DEVMAN_TOKEN')
-
-bot = telegram.Bot(token=BOT_TOKEN)
-
-payload = {'Authorization': DEVMAN_TOKEN}
-
-user_chat_id = os.environ.get('CHAT_ID')
-
-
 def main():
+    load_dotenv()
+
+    BOT_TOKEN = os.environ.get('BOT_TOKEN')
+    DEVMAN_TOKEN = os.environ.get('DEVMAN_TOKEN')
+
+    bot = telegram.Bot(token=BOT_TOKEN)
+
+    payload = {'Authorization': DEVMAN_TOKEN}
+
+    user_chat_id = os.environ.get('CHAT_ID')
+
     fail_connection_count = 0
 
     while True:
@@ -33,24 +31,22 @@ def main():
                 response = requests.get('https://dvmn.org/api/long_polling/?timestamp=10000000000',
                                         headers=payload,
                                         timeout=10)
-                if response.status_code:
-                    response_data = json.loads(response.text)
-                    if response_data['status'] == 'found':
+                response.raise_for_status()
+                response_data = json.loads(response.text)
 
-                        project_title = response_data['new_attempts'][0]['lesson_title']
-                        work_status = response_data['new_attempts'][0]['is_negative']
+                if response_data['status'] == 'found':
+                    project_title = response_data['new_attempts'][0]['lesson_title']
+                    work_status = response_data['new_attempts'][0]['is_negative']
 
-                        if work_status:
-                            work_response = 'К сожалению, в работе нашлись ошибки.'
-                        else:
-                            work_response = 'Преподователю все понравилось, можно приступать к следующему уроку!'
+                    if work_status:
+                        work_response = 'К сожалению, в работе нашлись ошибки.'
+                    else:
+                        work_response = 'Преподователю все понравилось, можно приступать к следующему уроку!'
 
-                        bot.send_message(chat_id=user_chat_id,
-                                         text=f"""У вас проверили работу \"{project_title}\"
+                    bot.send_message(chat_id=user_chat_id,
+                                     text=f"""У вас проверили работу \"{project_title}\"
 {work_response}""",
-                                         parse_mode=telegram.ParseMode.HTML)
-                else:
-                    fail_connection_count += 1
+                                     parse_mode=telegram.ParseMode.HTML)
             except (requests.exceptions.ReadTimeout, ConnectionError) as e:
                 fail_connection_count += 1
 
