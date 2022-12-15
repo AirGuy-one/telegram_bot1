@@ -32,11 +32,11 @@ def main():
                                         headers=payload,
                                         timeout=10)
                 response.raise_for_status()
-                response_data = json.loads(response.text)
+                check_info = json.loads(response.text)
 
-                if response_data['status'] == 'found':
-                    project_title = response_data['new_attempts'][0]['lesson_title']
-                    work_status = response_data['new_attempts'][0]['is_negative']
+                if check_info['status'] == 'found':
+                    project_title = check_info['new_attempts'][0]['lesson_title']
+                    work_status = check_info['new_attempts'][0]['is_negative']
 
                     if work_status:
                         work_response = 'К сожалению, в работе нашлись ошибки.'
