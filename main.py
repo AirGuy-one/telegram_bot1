@@ -32,7 +32,8 @@ def main():
                 # Here we get the count of seconds that have passed since 1970
                 current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())
                 response = requests.get(
-                    f'https://dvmn.org/api/long_polling/?timestamp={current_time - 10}',
+                    # Here we subtract 5 minutes from the timestamp
+                    f'https://dvmn.org/api/long_polling/?timestamp={current_time - 300}',
                     headers=payload,
                     timeout=10
                 )
