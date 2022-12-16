@@ -4,18 +4,19 @@ import json
 import telegram
 import time
 
+from datetime import datetime
 from dotenv import load_dotenv
 
 
 def main():
     load_dotenv()
 
-    BOT_TOKEN = os.environ.get('BOT_TOKEN')
-    DEVMAN_TOKEN = os.environ.get('DEVMAN_TOKEN')
+    bot_token = os.environ.get('BOT_TOKEN')
+    devman_token = os.environ.get('DEVMAN_TOKEN')
 
-    bot = telegram.Bot(token=BOT_TOKEN)
+    bot = telegram.Bot(token=bot_token)
 
-    payload = {'Authorization': DEVMAN_TOKEN}
+    payload = {'Authorization': devman_token}
 
     user_chat_id = os.environ.get('CHAT_ID')
 
@@ -28,9 +29,13 @@ def main():
             fail_connection_count = 0
         else:
             try:
-                response = requests.get('https://dvmn.org/api/long_polling/?timestamp=10000000000',
-                                        headers=payload,
-                                        timeout=10)
+                # Here we get the count of seconds that have passed since 1970
+                current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())
+                response = requests.get(
+                    f'https://dvmn.org/api/long_polling/?timestamp={current_time - 10}',
+                    headers=payload,
+                    timeout=10
+                )
                 response.raise_for_status()
                 check_info = json.loads(response.text)
 
@@ -43,16 +48,17 @@ def main():
                     else:
                         work_response = 'Преподователю все понравилось, можно приступать к следующему уроку!'
 
-                    bot.send_message(chat_id=user_chat_id,
-                                     text=f"""У вас проверили работу \"{project_title}\"
+                    bot.send_message(
+                        chat_id=user_chat_id,
+                        text=f"""У вас проверили работу \"{project_title}\"
 {work_response}""",
-                                     parse_mode=telegram.ParseMode.HTML)
-            except (requests.exceptions.ReadTimeout, ConnectionError) as e:
+                        parse_mode=telegram.ParseMode.HTML
+                    )
+            except ConnectionError:
                 fail_connection_count += 1
+            except requests.exceptions.ReadTimeout:
+                pass
 
 
 if __name__ == '__main__':
     main()
-
-
-
