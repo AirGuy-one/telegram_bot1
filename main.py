@@ -21,6 +21,8 @@ def main():
     user_chat_id = os.environ.get('CHAT_ID')
 
     fail_connection_count = 0
+    response_number = 0
+    desired_timestamp = 0
 
     while True:
         """ If server dont answer after 20 attempts, we will take a break for 10 minutes """
@@ -31,14 +33,19 @@ def main():
             try:
                 # Here we get the count of seconds that have passed since 1970
                 current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())
+                if response_number == 0:
+                    desired_timestamp = current_time - 300
                 response = requests.get(
-                    # Here we subtract 5 minutes from the timestamp
-                    f'https://dvmn.org/api/long_polling/?timestamp={current_time - 300}',
+                    # First time we subtract 5 minutes from the current time
+                    # Later we use the timestamp from the server response
+                    f'https://dvmn.org/api/long_polling/?timestamp={desired_timestamp}',
                     headers=payload,
                     timeout=10
                 )
                 response.raise_for_status()
                 check_info = json.loads(response.text)
+
+                desired_timestamp = check_info['request_query'][0][1]
 
                 if check_info['status'] == 'found':
                     project_title = check_info['new_attempts'][0]['lesson_title']
@@ -55,6 +62,7 @@ def main():
 {work_response}""",
                         parse_mode=telegram.ParseMode.HTML
                     )
+                response_number += 1
             except ConnectionError:
                 fail_connection_count += 1
             except requests.exceptions.ReadTimeout:
