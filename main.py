@@ -35,10 +35,12 @@ def main():
                 current_time = time.time()
                 if response_number == 0:
                     desired_timestamp = current_time
+                payload_params = {'timestamp': desired_timestamp}
                 response = requests.get(
                     # The first time we just set the desired_timestamp value of the current time
                     # Later we use the timestamp from the server response
-                    f'https://dvmn.org/api/long_polling/?timestamp={desired_timestamp}',
+                    f'https://dvmn.org/api/long_polling',
+                    params=payload_params,
                     headers=payload,
                     timeout=10
                 )
