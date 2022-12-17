@@ -4,7 +4,6 @@ import json
 import telegram
 import time
 
-from datetime import datetime
 from dotenv import load_dotenv
 
 
@@ -25,18 +24,19 @@ def main():
     desired_timestamp = 0
 
     while True:
-        """ If server dont answer after 20 attempts, we will take a break for 10 minutes """
+        # If server don't answer after 20 attempts,
+        # we will take a break for 10 minutes
         if fail_connection_count == 20:
             time.sleep(600)
             fail_connection_count = 0
         else:
             try:
                 # Here we get the count of seconds that have passed since 1970
-                current_time = int((datetime.now() - datetime(1970, 1, 1)).total_seconds())
+                current_time = time.time()
                 if response_number == 0:
-                    desired_timestamp = current_time - 300
+                    desired_timestamp = current_time
                 response = requests.get(
-                    # First time we subtract 5 minutes from the current time
+                    # The first time we just set the desired_timestamp value of the current time
                     # Later we use the timestamp from the server response
                     f'https://dvmn.org/api/long_polling/?timestamp={desired_timestamp}',
                     headers=payload,
