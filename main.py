@@ -19,13 +19,10 @@ def main():
     user_chat_id = os.environ.get('CHAT_ID')
 
     fail_connection_count = 0
-    response_number = 0
-    # Here we get the count of seconds that have passed since 1970
+
     desired_timestamp = time.time()
 
     while True:
-        # If server don't answer after 20 attempts,
-        # we will take a break for 10 minutes
         if fail_connection_count == 20:
             time.sleep(600)
             fail_connection_count = 0
@@ -33,8 +30,6 @@ def main():
             try:
                 payload_params = {'timestamp': desired_timestamp}
                 response = requests.get(
-                    # The first time we just set the desired_timestamp value of the current time
-                    # Later we use the timestamp from the server response
                     f'https://dvmn.org/api/long_polling',
                     params=payload_params,
                     headers=payload,
@@ -44,6 +39,8 @@ def main():
                 check_info = response.json()
 
                 if check_info['status'] == 'found':
+                    desired_timestamp = check_info['request_query'][0][1]
+
                     project_title = check_info['new_attempts'][0]['lesson_title']
                     work_status = check_info['new_attempts'][0]['is_negative']
 
@@ -61,7 +58,6 @@ def main():
                 elif check_info['status'] == 'timeout':
                     desired_timestamp = check_info['timestamp_to_request']
 
-                response_number += 1
             except ConnectionError:
                 fail_connection_count += 1
             except requests.exceptions.ReadTimeout:
