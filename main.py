@@ -39,7 +39,7 @@ def main():
                 check_info = response.json()
 
                 if check_info['status'] == 'found':
-                    desired_timestamp = check_info['request_query'][0][1]
+                    desired_timestamp = check_info['timestamp']
 
                     project_title = check_info['new_attempts'][0]['lesson_title']
                     work_status = check_info['new_attempts'][0]['is_negative']
