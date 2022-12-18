@@ -1,6 +1,5 @@
 import os
 import requests
-import json
 import telegram
 import time
 
@@ -21,7 +20,8 @@ def main():
 
     fail_connection_count = 0
     response_number = 0
-    desired_timestamp = 0
+    # Here we get the count of seconds that have passed since 1970
+    desired_timestamp = time.time()
 
     while True:
         # If server don't answer after 20 attempts,
@@ -31,10 +31,6 @@ def main():
             fail_connection_count = 0
         else:
             try:
-                # Here we get the count of seconds that have passed since 1970
-                current_time = time.time()
-                if response_number == 0:
-                    desired_timestamp = current_time
                 payload_params = {'timestamp': desired_timestamp}
                 response = requests.get(
                     # The first time we just set the desired_timestamp value of the current time
@@ -45,9 +41,7 @@ def main():
                     timeout=10
                 )
                 response.raise_for_status()
-                check_info = json.loads(response.text)
-
-                desired_timestamp = check_info['request_query'][0][1]
+                check_info = response.json()
 
                 if check_info['status'] == 'found':
                     project_title = check_info['new_attempts'][0]['lesson_title']
@@ -64,6 +58,9 @@ def main():
 {work_response}""",
                         parse_mode=telegram.ParseMode.HTML
                     )
+                elif check_info['status'] == 'timeout':
+                    desired_timestamp = check_info['timestamp_to_request']
+
                 response_number += 1
             except ConnectionError:
                 fail_connection_count += 1
