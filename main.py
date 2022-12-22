@@ -76,8 +76,7 @@ def main():
             except ConnectionError as connection_e:
                 logger.error(connection_e)
                 fail_connection_count += 1
-            except requests.exceptions.ReadTimeout as time_e:
-                logger.error(time_e)
+            except requests.exceptions.ReadTimeout:
                 pass
 
 
