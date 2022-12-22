@@ -2,8 +2,10 @@ import os
 import requests
 import telegram
 import time
+import logging
 
 from dotenv import load_dotenv
+from tg_handler import TelegramLogsHandler
 
 
 def main():
@@ -12,11 +14,21 @@ def main():
     bot_token = os.environ.get('BOT_TOKEN')
     devman_token = os.environ.get('DEVMAN_TOKEN')
 
-    bot = telegram.Bot(token=bot_token)
+    tg_bot = telegram.Bot(token=bot_token)
+
+    # Base logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
     payload = {'Authorization': devman_token}
 
+    # Chat id of user to whom to send the messages
     user_chat_id = os.environ.get('CHAT_ID')
+
+    # Here we create telegram handler
+    tg_handler = TelegramLogsHandler(tg_bot, user_chat_id)
+
+    logger.addHandler(tg_handler)
 
     fail_connection_count = 0
 
@@ -49,16 +61,20 @@ def main():
                     else:
                         work_response = 'Преподователю все понравилось, можно приступать к следующему уроку!'
 
-                    bot.send_message(
+                    tg_bot.send_message(
                         chat_id=user_chat_id,
                         text=f"""У вас проверили работу \"{project_title}\"
 {work_response}""",
                         parse_mode=telegram.ParseMode.HTML
                     )
+
+                    logger.info('the message was successfully sent')
+
                 elif check_info['status'] == 'timeout':
                     desired_timestamp = check_info['timestamp_to_request']
 
             except ConnectionError:
+                logger.error('failed to connect to the server')
                 fail_connection_count += 1
             except requests.exceptions.ReadTimeout:
                 pass
