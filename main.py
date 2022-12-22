@@ -73,10 +73,11 @@ def main():
                 elif check_info['status'] == 'timeout':
                     desired_timestamp = check_info['timestamp_to_request']
 
-            except ConnectionError:
-                logger.error('failed to connect to the server')
+            except ConnectionError as connection_e:
+                logger.error(connection_e)
                 fail_connection_count += 1
-            except requests.exceptions.ReadTimeout:
+            except requests.exceptions.ReadTimeout as time_e:
+                logger.error(time_e)
                 pass
 
 
