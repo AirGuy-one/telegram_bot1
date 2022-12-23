@@ -22,8 +22,7 @@ def main():
 
     payload = {'Authorization': devman_token}
 
-    # Chat id of user to whom to send the messages
-    user_chat_id = os.environ.get('CHAT_ID')
+    user_chat_id = os.environ.get('TG_CHAT_ID')
 
     # Here we create telegram handler
     tg_handler = TelegramLogsHandler(tg_bot, user_chat_id)
