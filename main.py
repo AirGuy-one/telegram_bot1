@@ -8,6 +8,11 @@ from dotenv import load_dotenv
 from tg_handler import TelegramLogsHandler
 
 
+# Base logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+
 def main():
     load_dotenv()
 
@@ -15,10 +20,6 @@ def main():
     devman_token = os.environ.get('DEVMAN_TOKEN')
 
     tg_bot = telegram.Bot(token=bot_token)
-
-    # Base logger
-    logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
 
     payload = {'Authorization': devman_token}
 
