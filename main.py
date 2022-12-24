@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 from tg_handler import TelegramLogsHandler
 
 
-# Base logger
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -25,7 +24,6 @@ def main():
 
     user_chat_id = os.environ.get('TG_CHAT_ID')
 
-    # Here we create telegram handler
     tg_handler = TelegramLogsHandler(tg_bot, user_chat_id)
 
     logger.addHandler(tg_handler)
