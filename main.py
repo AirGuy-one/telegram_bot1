@@ -9,10 +9,11 @@ from tg_handler import TelegramLogsHandler
 
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
 
 def main():
+    logger.setLevel(logging.INFO)
+    
     load_dotenv()
 
     bot_token = os.environ.get('BOT_TOKEN')
