@@ -11,7 +11,11 @@ TG_CHAT_ID=123456789
 ```shell
 pip install -r requirements.txt
 ```
-3. Осуществить запуск бота
+3. Создайте образ докер контейнера
 ```shell
-python3 main.py
+docker build -t telegram-bot-1 .
+```
+4. Запустите докер контейнер
+```shell
+docker run -d --name telegram-bot-1-container telegram-bot-1
 ```
